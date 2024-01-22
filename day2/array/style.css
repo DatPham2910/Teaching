@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.container h1 {
+    color: #333;
+}
+
+a {
+    display: block;
+    margin: 10px 0;
+    font-size: 18px;
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.exercise-container {
+    margin-bottom: 20px;
+}
+
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+h2 {
+    color: #333;
+}
