@@ -114,3 +114,46 @@ for (let items of products.data) {
     document.getElementById("products").appendChild(card);
 }
 
+
+function getProduct() {
+    let products = localStorage.getItem('products');
+    return products ? JSON.parse(products) : [];
+}
+
+for (let i of products.data){
+    // let product = JSON.parse(localStorage.product)
+    let product = getProduct();
+    product.push({
+        name: i.name,
+        price: i.price , 
+        images: i.image
+    })
+    localStorage.setItem("products", JSON.stringify(product))
+}
+
+function getCart() {
+    let carts = localStorage.getItem('cart');
+    return carts ? JSON.parse(carts) : [];
+}
+
+const addToCart = () => {
+    // Get the current cart from localStorage, or initialize an empty array if none exists
+    let cart = getCart();
+
+    // Find the product details from the products data
+    let productToAdd = products.data.find(product => product.name === productName);
+
+    // Check if the product is already in the cart
+    let existingProduct = cart.find(product => product.name === productName);
+    if (existingProduct) {
+        alert("Sản phẩm đã có trong giỏ hàng!");
+    } else {
+        // If not, add the product to the cart
+        cart.push(productToAdd);
+
+        // Save the updated cart back to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        alert("Đã thêm sản phẩm vào giỏ hàng!");
+    }
+}
