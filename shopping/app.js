@@ -80,80 +80,94 @@ let products = {
     ]
 }
 
-for (let items of products.data) {
 
-    let card = document.createElement("div")
-    card.classList.add("card")
-
-    let imgContainer = document.createElement("div")
-    imgContainer.classList.add("image-container")
-
-    let image = document.createElement("img")
-    image.setAttribute("src", items.image)
-    imgContainer.appendChild(image)
-    card.appendChild(imgContainer)
-
-    let container = document.createElement("div")
-    container.classList.add("container")
-
-    let name = document.createElement("h5");
-    name.classList.add("product-name");
-    name.innerText = items.name.toUpperCase();
-    container.appendChild(name);
-
-    let price = document.createElement("h6");
-    price.innerHTML = "<b>Price:</b> " + items.price;
-    container.appendChild(price);
-
-    let btn = document.createElement("button")
-    btn.setAttribute("onclick", "addToCart()")
-    btn.innerHTML = "Thêm vào giỏ hàng"
-    container.appendChild(btn)
-  
-    card.appendChild(container);
-    document.getElementById("products").appendChild(card);
+function initProductsLocalStrorage() {
+    let productList = getProduct();
+    if (!productList.length) {
+        for (let i of products.data){
+            let product = getProduct();
+            product.push({
+                name: i.name,
+                price: i.price , 
+                images: i.image
+            })
+            localStorage.setItem("products", JSON.stringify(product))
+        }
+    }
 }
 
+function initProduct() {
+    for (let items of products.data) {
+
+        let card = document.createElement("div")
+        card.classList.add("card")
+    
+        let imgContainer = document.createElement("div")
+        imgContainer.classList.add("image-container")
+    
+        let image = document.createElement("img")
+        image.setAttribute("src", items.image)
+        imgContainer.appendChild(image)
+        card.appendChild(imgContainer)
+    
+        let container = document.createElement("div")
+        container.classList.add("container")
+    
+        let name = document.createElement("h5");
+        name.classList.add("product-name");
+        name.innerText = items.name.toUpperCase();
+        container.appendChild(name);
+    
+        let price = document.createElement("h6");
+        price.innerHTML = "<b>Price:</b> " + items.price;
+        container.appendChild(price);
+    
+        let btn = document.createElement("button");
+        btn.addEventListener('click', function() {
+            addToCart(items.name);
+        }); // Pass the product name
+        btn.innerHTML = "Thêm vào giỏ hàng"
+        container.appendChild(btn)
+      
+        card.appendChild(container);
+        document.getElementById("products").appendChild(card);
+    }
+}
 
 function getProduct() {
     let products = localStorage.getItem('products');
     return products ? JSON.parse(products) : [];
 }
 
-for (let i of products.data){
-    // let product = JSON.parse(localStorage.product)
-    let product = getProduct();
-    product.push({
-        name: i.name,
-        price: i.price , 
-        images: i.image
-    })
-    localStorage.setItem("products", JSON.stringify(product))
+function getCards() {
+    let cards = localStorage.getItem('cards');
+    return cards ? JSON.parse(cards) : [];
 }
 
-function getCart() {
-    let carts = localStorage.getItem('cart');
-    return carts ? JSON.parse(carts) : [];
-}
+function addToCart(productName) {
+    let cards = getCards(); // Retrieve the current cards
 
-const addToCart = () => {
-    // Get the current cart from localStorage, or initialize an empty array if none exists
-    let cart = getCart();
-
-    // Find the product details from the products data
+    // Find the product details based on the product name
     let productToAdd = products.data.find(product => product.name === productName);
 
-    // Check if the product is already in the cart
-    let existingProduct = cart.find(product => product.name === productName);
+    if (!productToAdd) {
+        console.error("Product not found");
+        return;
+    }
+
+    // Check if the product is already in the cards
+    let existingProduct = cards.find(product => product.name === productName);
     if (existingProduct) {
+        // Optionally, increment quantity here if you're tracking quantities
         alert("Sản phẩm đã có trong giỏ hàng!");
     } else {
-        // If not, add the product to the cart
-        cart.push(productToAdd);
-
-        // Save the updated cart back to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
-        
+        // Add the new product to the cards
+        cards.push(productToAdd);
+        localStorage.setItem('cards', JSON.stringify(cards)); // Save the updated cart
         alert("Đã thêm sản phẩm vào giỏ hàng!");
     }
 }
+
+// Initial render item
+initProductsLocalStrorage();
+initProduct();
